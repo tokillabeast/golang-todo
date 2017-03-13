@@ -4,15 +4,31 @@ services:
 
   golang-todo_rethinkdb:
     image: rethinkdb:2.3.5
+    container_name: golang-todo_rethinkdb
     ports:
       - "8080:8080"
     volumes:
-      - golang-todo_data:/data
+      - golang-todo_rethink_data:/data
+    networks:
+      - golang-todo_network
+
+  golang-todo_application:
+    image: golang:1.8.0-alpine
+    container_name: golang_todo_application
+    working_dir: /go/src/github.com/tokillamockingbird/golang-todo
+    command: /bin/sh -c "go run test.go"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/go/src/github.com/tokillamockingbird/golang-todo
+      - golang-todo_application_data:/go/src
     networks:
       - golang-todo_network
 
 volumes:
-  golang-todo_data:
+  golang-todo_rethink_data:
+    driver: local
+  golang-todo_application_data:
     driver: local
 
 networks:
