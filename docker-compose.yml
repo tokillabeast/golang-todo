@@ -13,10 +13,10 @@ services:
       - golang-todo_network
 
   golang-todo_application:
-    image: golang:1.8.0-alpine
+    image: golang:1.8.0
     container_name: golang_todo_application
     working_dir: /go/src/github.com/tokillamockingbird/golang-todo
-    command: /bin/sh -c "go run test.go"
+    command: /bin/sh -c "go get -u github.com/pressly/chi && go run test.go"
     ports:
       - "8000:8000"
     volumes:
