@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+
+  golang-todo_rethinkdb:
+    image: rethinkdb:2.3.5
+    ports:
+      - "8080:8080"
+    volumes:
+      - golang-todo_data:/data
+    networks:
+      - golang-todo_network
+
+volumes:
+  golang-todo_data:
+    driver: local
+
+networks:
+  golang-todo_network:
+    driver: bridge
