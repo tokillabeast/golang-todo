@@ -1,0 +1,11 @@
+[development]
+BaseUrl = "0.0.0.0:8000"
+DatabaseUrl = "golang-todo_rethinkdb"
+
+[staging]
+BaseUrl = "0.0.0.0:8000"
+DatabaseUrl = "golang-todo_rethinkdb"
+
+[production]
+BaseUrl = "0.0.0.0:8000"
+DatabaseUrl = "golang-todo_rethinkdb"

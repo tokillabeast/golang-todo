@@ -9,8 +9,9 @@ import (
 )
 
 func RethinkTest() string {
+	conf := ReadConfig(DevelopmentEnv)
 	session, err := r.Connect(r.ConnectOpts{
-		Address: "golang-todo_rethinkdb",
+		Address: conf.DatabaseUrl,
 	})
 	if err != nil {
 		log.Fatalln(err)
@@ -29,10 +30,11 @@ func RethinkTest() string {
 }
 
 func main() {
+	conf := ReadConfig(DevelopmentEnv)
 	r := chi.NewRouter()
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		result := RethinkTest()
 		w.Write([]byte(result))
 	})
-	http.ListenAndServe("0.0.0.0:8000", r)
+	http.ListenAndServe(conf.BaseUrl, r)
 }

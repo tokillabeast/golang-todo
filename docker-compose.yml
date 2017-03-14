@@ -18,7 +18,9 @@ services:
     working_dir: /go/src/github.com/tokillamockingbird/golang-todo
     command: /bin/sh -c "go get -u github.com/pressly/chi &&
               go get gopkg.in/gorethink/gorethink.v3 &&
-              go run test.go"
+              go get github.com/spf13/viper &&
+              go get github.com/codegangsta/gin &&
+              go build && ./main"
     ports:
       - "8000:8000"
     volumes:
