@@ -2,39 +2,40 @@ version: '3.1'
 
 services:
 
-  golang-todo_rethinkdb:
+  golang_todo_rethinkdb:
     image: rethinkdb:2.3.5
-    container_name: golang-todo_rethinkdb
+    container_name: golang_todo_rethinkdb
     ports:
       - "8080:8080"
     volumes:
-      - golang-todo_rethink_data:/data
+      - golang_todo_rethink_data:/data
     networks:
-      - golang-todo_network
+      - golang_todo_network
 
-  golang-todo_application:
+  golang_todo_backend:
     image: golang:1.8.0
-    container_name: golang_todo_application
+    container_name: golang_todo_backend
     working_dir: /go/src/github.com/tokillamockingbird/golang-todo
-    command: /bin/sh -c "go get -u github.com/pressly/chi &&
+    command: /bin/sh -c "cd backend &&
+              go get -u github.com/pressly/chi &&
               go get gopkg.in/gorethink/gorethink.v3 &&
               go get github.com/spf13/viper &&
               go get github.com/codegangsta/gin &&
-              go build && ./main"
+              go build && ./backend"
     ports:
       - "8000:8000"
     volumes:
-      - .:/go/src/github.com/tokillamockingbird/golang-todo
-      - golang-todo_application_data:/go/src
+      - .:/go/src/github.com/tokillamockingbird/golang-todo/
+      - golang_todo_backend_data:/go/src
     networks:
-      - golang-todo_network
+      - golang_todo_network
 
 volumes:
-  golang-todo_rethink_data:
+  golang_todo_rethink_data:
     driver: local
-  golang-todo_application_data:
+  golang_todo_backend_data:
     driver: local
 
 networks:
-  golang-todo_network:
+  golang_todo_network:
     driver: bridge

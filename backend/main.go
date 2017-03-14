@@ -6,10 +6,12 @@ import (
 
 	"github.com/pressly/chi"
 	r "gopkg.in/gorethink/gorethink.v3"
+
+	"github.com/tokillamockingbird/golang-todo/backend/config"
 )
 
 func RethinkTest() string {
-	conf := ReadConfig(DevelopmentEnv)
+	conf := config.ReadConfig(config.DevelopmentEnv)
 	session, err := r.Connect(r.ConnectOpts{
 		Address: conf.DatabaseUrl,
 	})
@@ -30,7 +32,7 @@ func RethinkTest() string {
 }
 
 func main() {
-	conf := ReadConfig(DevelopmentEnv)
+	conf := config.ReadConfig(config.DevelopmentEnv)
 	r := chi.NewRouter()
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		result := RethinkTest()
