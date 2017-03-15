@@ -8,9 +8,9 @@ type Base struct {
 }
 
 type Todo struct {
-	Id     string `json:"id",omitempty`
-	Text   string `json:"text"`
-	Status string `json:"status"`
+	Id     string `gorethink:"id,omitempty" json:"id,omitempty"`
+	Text   string `gorethink:"text" json:"text"`
+	Status string `gorethink:"text" json:"status"`
 	Base
 }
 

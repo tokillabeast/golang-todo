@@ -2,7 +2,6 @@ package todo
 
 import (
 	"log"
-	"fmt"
 
 	r "gopkg.in/gorethink/gorethink.v3"
 
@@ -37,16 +36,25 @@ func RepoFindTodo(id string) Todo {
 	return todo
 }
 
-func RepoCreateTodo(t Todo) {
+func RepoCreateTodo(todo Todo) Todo {
+	var result database.InsertRespose
 	session := database.Connect()
-	todoItem := Todo{Text: "TodoItem Test", Status: "Active"}
-	err := r.Table("test").Insert(todoItem).Exec(session)
+	response, err := r.Table("test").Insert(todo).Run(session)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("Completed!!!!!")
+	err = response.One(&result)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	todo.Id = result.Generated_keys[0]
+	return todo
 }
 
-func RepoDeleteTodo(id int) {
-
+func RepoDeleteTodo(id string) {
+	session := database.Connect()
+	err := r.Table("test").Get(id).Delete().Exec(session)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

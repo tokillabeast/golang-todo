@@ -7,6 +7,7 @@ services:
     container_name: golang_todo_rethinkdb
     ports:
       - "8080:8080"
+      - "28015:28015"
     volumes:
       - golang_todo_rethink_data:/data
     networks:
