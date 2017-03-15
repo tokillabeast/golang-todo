@@ -1,11 +1,20 @@
 [development]
 BaseUrl = "0.0.0.0:8000"
 DatabaseUrl = "golang_todo_rethinkdb"
+DatabaseName = "test"
+DatabaseInitialCap = 10
+DatabaseMaxOpen = 10
 
 [staging]
 BaseUrl = "0.0.0.0:8000"
 DatabaseUrl = "golang_todo_rethinkdb"
+DatabaseName = "test"
+DatabaseInitialCap = 10
+DatabaseMaxOpen = 10
 
 [production]
 BaseUrl = "0.0.0.0:8000"
 DatabaseUrl = "golang_todo_rethinkdb"
+DatabaseName = "test"
+DatabaseInitialCap = 10
+DatabaseMaxOpen = 10

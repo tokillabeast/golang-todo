@@ -22,6 +22,7 @@ services:
               go get github.com/spf13/viper &&
               go get github.com/codegangsta/gin &&
               go build && ./backend"
+    restart: always
     ports:
       - "8000:8000"
     volumes:
