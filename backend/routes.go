@@ -1,4 +1,4 @@
-package route
+package main
 
 import (
 	"github.com/pressly/chi"
@@ -6,10 +6,10 @@ import (
 	"github.com/tokillamockingbird/golang-todo/backend/todo"
 )
 
-func Routes() *chi.Mux{
+func Routes() *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Route("/api/v1/todos/", func(r chi.Router){
+	r.Route("/api/v1/todos/", func(r chi.Router) {
 		r.Get("/", todo.ListTodos)
 		r.Post("/", todo.CreateTodo)
 		r.Route("/:todoId", func(r chi.Router) {
@@ -18,7 +18,6 @@ func Routes() *chi.Mux{
 			r.Patch("/", todo.PatchTodo)
 			r.Delete("/", todo.DeleteTodo)
 		})
-
 
 	})
 

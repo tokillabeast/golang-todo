@@ -3,7 +3,10 @@ package todo
 import (
 	"net/http"
 	"encoding/json"
+
 	"github.com/pressly/chi"
+
+	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
 func ListTodos(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +29,7 @@ func GetTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
-	var todo Todo
+	var todo models.Todo
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&todo)
 	if err != nil {
@@ -42,11 +45,30 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func PutTodo(w http.ResponseWriter, r *http.Request) {
-
+	var todo models.Todo
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&todo)
+	if err != nil {
+		panic(err)
+	}
+	defer r.Body.Close()
+	todo = RepoUpdateTodo(todo)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(todo); err != nil {
+		panic(err)
+	}
 }
 
 func PatchTodo(w http.ResponseWriter, r *http.Request) {
-
+	todoId := chi.URLParam(r, "todoId") // FIXME: not working correct
+	todo := RepoPatchTodo(todoId, r.Body)
+	defer r.Body.Close()
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(todo); err != nil {
+		panic(err)
+	}
 }
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {

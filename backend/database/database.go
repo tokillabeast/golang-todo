@@ -11,10 +11,10 @@ import (
 func Connect() *r.Session {
 	conf := config.ReadConfig(config.DevelopmentEnv)
 	session, err := r.Connect(r.ConnectOpts{
-		Address: conf.DatabaseUrl,
-		Database: conf.DatabaseName,
+		Address:    conf.DatabaseUrl,
+		Database:   conf.DatabaseName,
 		InitialCap: conf.DatabaseInitialCap,
-		MaxOpen: conf.DatabaseMaxOpen,
+		MaxOpen:    conf.DatabaseMaxOpen,
 	})
 
 	if err != nil {

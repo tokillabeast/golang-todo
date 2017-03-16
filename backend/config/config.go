@@ -17,11 +17,11 @@ const (
 )
 
 type Config struct {
-	BaseUrl     string
-	DatabaseUrl string
-	DatabaseName string
+	BaseUrl            string
+	DatabaseUrl        string
+	DatabaseName       string
 	DatabaseInitialCap int
-	DatabaseMaxOpen int
+	DatabaseMaxOpen    int
 }
 
 func ReadConfig(env Env) Config {
