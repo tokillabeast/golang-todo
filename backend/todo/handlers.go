@@ -1,29 +1,25 @@
 package todo
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
 
 	"github.com/pressly/chi"
 
+	"github.com/tokillamockingbird/golang-todo/backend/headers"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
 func ListTodos(w http.ResponseWriter, r *http.Request) {
-	todos := RepoListTodo()
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(todos); err != nil {
+	headers.SetJSONContentType(w, http.StatusOK)
+	if err := json.NewEncoder(w).Encode(RepoListTodo()); err != nil {
 		panic(err)
 	}
 }
 
 func GetTodo(w http.ResponseWriter, r *http.Request) {
-	todoId := chi.URLParam(r, "todoId")
-	todo := RepoFindTodo(todoId)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(todo); err != nil {
+	headers.SetJSONContentType(w, http.StatusOK)
+	if err := json.NewEncoder(w).Encode(RepoFindTodo(chi.URLParam(r, "todoId"))); err != nil {
 		panic(err)
 	}
 }
@@ -37,8 +33,8 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	todo = RepoCreateTodo(todo)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+
+	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
 		panic(err)
 	}
@@ -53,8 +49,8 @@ func PutTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	todo = RepoUpdateTodo(todo)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+
+	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
 		panic(err)
 	}
@@ -64,8 +60,8 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 	todoId := chi.URLParam(r, "todoId") // FIXME: not working correct
 	todo := RepoPatchTodo(todoId, r.Body)
 	defer r.Body.Close()
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+
+	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
 		panic(err)
 	}
@@ -74,6 +70,6 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	todoId := chi.URLParam(r, "todoId")
 	RepoDeleteTodo(todoId)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+
+	headers.SetJSONContentType(w, http.StatusOK)
 }
