@@ -1,16 +1,18 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Base struct {
-	Created  time.Time `json:"created"`
-	Modified time.Time `json:"modified"`
+	Created  time.Time `gorethink:"created,omitempty" json:"created,omitempty"`
+	Modified time.Time `gorethink:"modified,omitempty" json:"modified,omitempty"`
 }
 
 type Todo struct {
 	Id     string `gorethink:"id,omitempty" json:"id,omitempty"`
-	Text   string `gorethink:"text" json:"text"`
-	Status string `gorethink:"text" json:"status"`
+	Text   string `gorethink:"text,omitempty" json:"text,omitempty"`
+	Status string `gorethink:"status,omitempty" json:"status,omitempty"`
 	Base
 }
 

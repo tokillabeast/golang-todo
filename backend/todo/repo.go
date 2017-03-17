@@ -32,25 +32,23 @@ func RepoFindTodo(id string) models.Todo {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = response.One(&todo)
+	err = response.One(&todo) // Check if result return values
 	if err != nil {
 		log.Fatalln(err)
 	}
 	return todo
 }
 
-func RepoCreateTodo(todo models.Todo) models.Todo { // FIXME: test, looks like doesn't work correct
-	var result database.InsertResponse
+func RepoCreateTodo(todo models.Todo) models.Todo {
 	session := database.Connect()
-	response, err := r.Table(todoTable).Insert(todo).Run(session)
+	response, err := r.Table(todoTable).Insert(todo).RunWrite(session)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = response.One(&result)
-	if err != nil {
-		log.Fatalln(err)
+	if len(response.GeneratedKeys) != 1 {
+		log.Fatalln("GeneratedKeys doesn't contain 1 element")
 	}
-	todo.Id = result.GeneratedKeys[0]
+	todo.Id = response.GeneratedKeys[0]
 	return todo
 }
 
@@ -63,18 +61,24 @@ func RepoUpdateTodo(todo models.Todo) models.Todo {
 	return todo
 }
 
-func RepoPatchTodo(todoId string, json interface{}) models.Todo {
-	var result database.UpdateResponse
+func RepoPatchTodo(todoId string, todo models.Todo) models.Todo {
 	session := database.Connect()
-	response, err := r.Table(todoTable).Get(todoId).Update(json).Run(session)
+	updateOpts := r.UpdateOpts{ReturnChanges: true}
+	response, err := r.Table(todoTable).Get(todoId).Update(todo, updateOpts).RunWrite(session)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = response.One(&result)
-	if err != nil {
-		log.Fatalln(err)
+	if len(response.Changes) != 1 {
+		log.Fatalln("Changes doesn't contain 1 element")
 	}
-	return result.Changes[0].NewVal
+	newValue := response.Changes[0].NewValue.(map[string]interface{})
+
+	return models.Todo{
+		Id:     newValue["id"].(string),
+		Text:   newValue["text"].(string),
+		Status: newValue["status"].(string),
+	}
+
 }
 
 func RepoDeleteTodo(id string) {
