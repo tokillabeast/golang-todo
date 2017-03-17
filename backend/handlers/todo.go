@@ -1,4 +1,4 @@
-package todo
+package handlers
 
 import (
 	"encoding/json"
@@ -6,13 +6,14 @@ import (
 
 	"github.com/pressly/chi"
 
+	"github.com/tokillamockingbird/golang-todo/backend/database"
 	"github.com/tokillamockingbird/golang-todo/backend/headers"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
 func ListTodos(w http.ResponseWriter, r *http.Request) {
 	headers.SetJSONContentType(w, http.StatusOK)
-	if err := json.NewEncoder(w).Encode(RepoListTodo()); err != nil {
+	if err := json.NewEncoder(w).Encode(database.RepoListTodo()); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
@@ -20,7 +21,8 @@ func ListTodos(w http.ResponseWriter, r *http.Request) {
 
 func GetTodo(w http.ResponseWriter, r *http.Request) {
 	headers.SetJSONContentType(w, http.StatusOK)
-	if err := json.NewEncoder(w).Encode(RepoFindTodo(chi.URLParam(r, "todoId"))); err != nil {
+	todoId := chi.URLParam(r, "todoId")
+	if err := json.NewEncoder(w).Encode(database.RepoFindTodo(todoId)); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
@@ -36,7 +38,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	todo = RepoCreateTodo(todo)
+	todo = database.RepoCreateTodo(todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
@@ -56,7 +58,7 @@ func PutTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	todo = RepoUpdateTodo(todo)
+	todo = database.RepoUpdateTodo(todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
@@ -76,7 +78,7 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	todo = RepoPatchTodo(todoId, todo)
+	todo = database.RepoPatchTodo(todoId, todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
@@ -87,7 +89,7 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	todoId := chi.URLParam(r, "todoId")
-	RepoDeleteTodo(todoId)
+	database.RepoDeleteTodo(todoId)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 }

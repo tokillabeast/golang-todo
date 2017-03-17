@@ -1,11 +1,10 @@
-package todo
+package database
 
 import (
 	"log"
 
 	r "gopkg.in/gorethink/gorethink.v3"
 
-	"github.com/tokillamockingbird/golang-todo/backend/database"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
@@ -13,8 +12,7 @@ const todoTable = "test" // FIXME: is it a best way to store table name?
 
 func RepoListTodo() models.Todos {
 	todos := models.Todos{}
-	session := database.Connect()
-	response, err := r.Table(todoTable).Run(session)
+	response, err := r.Table(todoTable).Run(Connect())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -27,8 +25,7 @@ func RepoListTodo() models.Todos {
 
 func RepoFindTodo(id string) models.Todo {
 	todo := models.Todo{}
-	session := database.Connect()
-	response, err := r.Table(todoTable).Get(id).Run(session)
+	response, err := r.Table(todoTable).Get(id).Run(Connect())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -40,8 +37,7 @@ func RepoFindTodo(id string) models.Todo {
 }
 
 func RepoCreateTodo(todo models.Todo) models.Todo {
-	session := database.Connect()
-	response, err := r.Table(todoTable).Insert(todo).RunWrite(session)
+	response, err := r.Table(todoTable).Insert(todo).RunWrite(Connect())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -53,8 +49,7 @@ func RepoCreateTodo(todo models.Todo) models.Todo {
 }
 
 func RepoUpdateTodo(todo models.Todo) models.Todo {
-	session := database.Connect()
-	err := r.Table(todoTable).Replace(todo).Exec(session)
+	err := r.Table(todoTable).Replace(todo).Exec(Connect())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -62,9 +57,8 @@ func RepoUpdateTodo(todo models.Todo) models.Todo {
 }
 
 func RepoPatchTodo(todoId string, todo models.Todo) models.Todo {
-	session := database.Connect()
-	updateOpts := r.UpdateOpts{ReturnChanges: true}
-	response, err := r.Table(todoTable).Get(todoId).Update(todo, updateOpts).RunWrite(session)
+	updateOpt := r.UpdateOpts{ReturnChanges: true}
+	response, err := r.Table(todoTable).Get(todoId).Update(todo, updateOpt).RunWrite(Connect())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -82,8 +76,7 @@ func RepoPatchTodo(todoId string, todo models.Todo) models.Todo {
 }
 
 func RepoDeleteTodo(id string) {
-	session := database.Connect()
-	err := r.Table(todoTable).Get(id).Delete().Exec(session)
+	err := r.Table(todoTable).Get(id).Delete().Exec(Connect())
 	if err != nil {
 		log.Fatalln(err)
 	}
