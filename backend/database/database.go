@@ -8,7 +8,7 @@ import (
 	"github.com/tokillamockingbird/golang-todo/backend/config"
 )
 
-func Connect() *r.Session {
+func Connect() *r.Session { // FIXME: GetSession?
 	conf := config.ReadConfig(config.DevelopmentEnv)
 	session, err := r.Connect(r.ConnectOpts{
 		Address:    conf.DatabaseUrl,

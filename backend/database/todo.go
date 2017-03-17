@@ -2,45 +2,39 @@ package database
 
 import (
 	"log"
+	"time"
 
 	r "gopkg.in/gorethink/gorethink.v3"
 
+	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
-const todoTable = "test" // FIXME: is it a best way to store table name?
+const table = "test" // FIXME: is it a best way to store table name?
 
-func RepoListTodo() models.Todos {
+func GetTodos() models.Todos {
 	todos := models.Todos{}
-	response, err := r.Table(todoTable).Run(Connect())
-	if err != nil {
-		log.Fatalln(err)
-	}
+	response, err := r.Table(table).Run(Connect())
+	e.CheckAndLogError(err)
 	err = response.All(&todos)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	e.CheckAndLogError(err)
 	return todos
 }
 
-func RepoFindTodo(id string) models.Todo {
+func GetTodo(id string) models.Todo {
 	todo := models.Todo{}
-	response, err := r.Table(todoTable).Get(id).Run(Connect())
-	if err != nil {
-		log.Fatalln(err)
-	}
+	response, err := r.Table(table).Get(id).Run(Connect())
+	e.CheckAndLogError(err)
 	err = response.One(&todo) // Check if result return values
-	if err != nil {
-		log.Fatalln(err)
-	}
+	e.CheckAndLogError(err)
 	return todo
 }
 
-func RepoCreateTodo(todo models.Todo) models.Todo {
-	response, err := r.Table(todoTable).Insert(todo).RunWrite(Connect())
-	if err != nil {
-		log.Fatalln(err)
-	}
+func CreateTodo(todo models.Todo) models.Todo {
+	todo.Created = time.Now()
+	todo.Modified = time.Now()
+	response, err := r.Table(table).Insert(todo).RunWrite(Connect())
+	e.CheckAndLogError(err)
 	if len(response.GeneratedKeys) != 1 {
 		log.Fatalln("GeneratedKeys doesn't contain 1 element")
 	}
@@ -48,20 +42,18 @@ func RepoCreateTodo(todo models.Todo) models.Todo {
 	return todo
 }
 
-func RepoUpdateTodo(todo models.Todo) models.Todo {
-	err := r.Table(todoTable).Replace(todo).Exec(Connect())
-	if err != nil {
-		log.Fatalln(err)
-	}
+func UpdateTodo(todo models.Todo) models.Todo { // FIXME: leave only update or patch
+	todo.Modified = time.Now()
+	err := r.Table(table).Replace(todo).Exec(Connect())
+	e.CheckAndLogError(err)
 	return todo
 }
 
-func RepoPatchTodo(todoId string, todo models.Todo) models.Todo {
+func PatchTodo(todoId string, todo models.Todo) models.Todo {
+	todo.Modified = time.Now()
 	updateOpt := r.UpdateOpts{ReturnChanges: true}
-	response, err := r.Table(todoTable).Get(todoId).Update(todo, updateOpt).RunWrite(Connect())
-	if err != nil {
-		log.Fatalln(err)
-	}
+	response, err := r.Table(table).Get(todoId).Update(todo, updateOpt).RunWrite(Connect())
+	e.CheckAndLogError(err)
 	if len(response.Changes) != 1 {
 		log.Fatalln("Changes doesn't contain 1 element")
 	}
@@ -75,9 +67,7 @@ func RepoPatchTodo(todoId string, todo models.Todo) models.Todo {
 
 }
 
-func RepoDeleteTodo(id string) {
-	err := r.Table(todoTable).Get(id).Delete().Exec(Connect())
-	if err != nil {
-		log.Fatalln(err)
-	}
+func DeleteTodo(id string) {
+	err := r.Table(table).Get(id).Delete().Exec(Connect())
+	e.CheckAndLogError(err)
 }

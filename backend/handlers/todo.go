@@ -11,10 +11,10 @@ import (
 	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
-func ListTodos(w http.ResponseWriter, r *http.Request) {
+func GetTodos(w http.ResponseWriter, r *http.Request) {
 	headers.SetJSONContentType(w, http.StatusOK)
-	if err := json.NewEncoder(w).Encode(database.RepoListTodo()); err != nil {
-		http.Error(w, err.Error(), 400)
+	if err := json.NewEncoder(w).Encode(database.GetTodos()); err != nil {
+		http.Error(w, err.Error(), 400) // FIXME: new function in errors like CheckAndLogError
 		return
 	}
 }
@@ -22,7 +22,7 @@ func ListTodos(w http.ResponseWriter, r *http.Request) {
 func GetTodo(w http.ResponseWriter, r *http.Request) {
 	headers.SetJSONContentType(w, http.StatusOK)
 	todoId := chi.URLParam(r, "todoId")
-	if err := json.NewEncoder(w).Encode(database.RepoFindTodo(todoId)); err != nil {
+	if err := json.NewEncoder(w).Encode(database.GetTodo(todoId)); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
@@ -38,11 +38,11 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	todo = database.RepoCreateTodo(todo)
+	todo = database.CreateTodo(todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
-		panic(err)
+		http.Error(w, err.Error(), 400)
 	}
 }
 
@@ -58,7 +58,7 @@ func PutTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	todo = database.RepoUpdateTodo(todo)
+	todo = database.UpdateTodo(todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
@@ -78,7 +78,7 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	todo = database.RepoPatchTodo(todoId, todo)
+	todo = database.PatchTodo(todoId, todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
@@ -89,7 +89,7 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	todoId := chi.URLParam(r, "todoId")
-	database.RepoDeleteTodo(todoId)
+	database.DeleteTodo(todoId)
 
 	headers.SetJSONContentType(w, http.StatusOK)
 }
