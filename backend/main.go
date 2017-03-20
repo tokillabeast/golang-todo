@@ -10,6 +10,6 @@ import (
 func main() {
 	r := Routes()
 	configuration := config.ReadConfig(config.DevelopmentEnv) // FIXME: config.DevelopmentEnv looks wrong
-	database.DatabaseInitialization(configuration)
+	database.InitDatabase(configuration)
 	http.ListenAndServe(configuration.BaseUrl, r)
 }
