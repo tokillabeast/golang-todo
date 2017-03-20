@@ -14,7 +14,9 @@ services:
       - golang_todo_network
 
   golang_todo_backend:
-    image: golang:1.8.0
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile-golang-glide
     container_name: golang_todo_backend
     working_dir: /go/src/github.com/tokillamockingbird/golang-todo
     command: /bin/sh -c "cd backend &&
@@ -30,6 +32,8 @@ services:
       - golang_todo_backend_data:/go/src
     networks:
       - golang_todo_network
+    environment:
+      - GOPATH=/go
 
 volumes:
   golang_todo_rethink_data:

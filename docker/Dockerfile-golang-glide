@@ -1,0 +1,9 @@
+FROM golang:1.8.0
+
+MAINTAINER tokillamockingbird <tokillamockingbird1989@gmail.com>
+
+RUN go get github.com/Masterminds/glide
+
+RUN cd $GOPATH/src/github.com/Masterminds/glide && make build
+
+RUN glide -v
