@@ -5,7 +5,6 @@ import (
 
 	"github.com/tokillamockingbird/golang-todo/backend/config"
 	"github.com/tokillamockingbird/golang-todo/backend/errors"
-	"log"
 )
 
 func InitDatabase(configuration config.Config) {
