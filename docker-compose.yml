@@ -19,17 +19,13 @@ services:
       dockerfile: ./docker/Dockerfile-golang-glide
     container_name: golang_todo_backend
     working_dir: /go/src/github.com/tokillamockingbird/golang-todo
-    command: /bin/sh -c "cd backend &&
-              go get -u github.com/pressly/chi &&
-              go get gopkg.in/gorethink/gorethink.v3 &&
-              go get github.com/spf13/viper &&
-              go get github.com/codegangsta/gin &&
-              go build && ./backend"
+    command: /bin/sh -c "cd backend && glide install && go build && ./backend"
     ports:
       - "8000:8000"
     volumes:
       - .:/go/src/github.com/tokillamockingbird/golang-todo/
-      - golang_todo_backend_data:/go/src
+      - golang_todo_backend_src_data:/go/src
+#      - golang_todo_backend_vendor_data:/go/src/github.com/tokillamockingbird/golang-todo/backend/vendor:rw
     networks:
       - golang_todo_network
     environment:
@@ -38,7 +34,9 @@ services:
 volumes:
   golang_todo_rethink_data:
     driver: local
-  golang_todo_backend_data:
+  golang_todo_backend_src_data:
+    driver: local
+  golang_todo_backend_vendor_data:
     driver: local
 
 networks:
