@@ -9,6 +9,8 @@ import (
 func Routes() *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Get("/api/v1/register", handlers.RegisterNewUser)
+
 	r.Route("/api/v1/todos/", func(r chi.Router) {
 		r.Get("/", handlers.GetTodos)
 		r.Post("/", handlers.CreateTodo)
@@ -19,6 +21,17 @@ func Routes() *chi.Mux {
 			r.Delete("/", handlers.DeleteTodo)
 		})
 
+	})
+
+	r.Route("/api/v1/users/", func(r chi.Router) {
+		r.Get("/", handlers.GetUsers)
+		r.Post("/", handlers.CreateUser)
+		r.Route("/:userId", func(r chi.Router) {
+			r.Get("/", handlers.GetUser)
+			r.Put("/", handlers.PutUser)
+			r.Patch("/", handlers.PatchUser)
+			r.Delete("/", handlers.DeleteUser)
+		})
 	})
 
 	return r

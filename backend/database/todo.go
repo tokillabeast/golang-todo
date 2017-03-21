@@ -54,10 +54,11 @@ func PatchTodo(todoId string, todo models.Todo) models.Todo {
 	updateOpt := r.UpdateOpts{ReturnChanges: true}
 	response, err := r.Table(TodoTable).Get(todoId).Update(todo, updateOpt).RunWrite(Connect())
 	e.CheckAndLogError(err)
-	if len(response.Changes) != 1 {
+	if len(response.Changes) != 1 { // FIXME: don't need to check Changes, we can send PATCH request with current value
 		log.Fatalln("Changes doesn't contain 1 element")
 	}
 	newValue := response.Changes[0].NewValue.(map[string]interface{})
+	// FIXME: get latest version of user
 
 	return models.Todo{
 		Id:     newValue["id"].(string),
@@ -67,7 +68,7 @@ func PatchTodo(todoId string, todo models.Todo) models.Todo {
 
 }
 
-func DeleteTodo(id string) {
-	err := r.Table(TodoTable).Get(id).Delete().Exec(Connect())
+func DeleteTodo(todoId string) {
+	err := r.Table(TodoTable).Get(todoId).Delete().Exec(Connect())
 	e.CheckAndLogError(err)
 }

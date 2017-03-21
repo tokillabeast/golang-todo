@@ -1,6 +1,8 @@
 package errors
 
-import "log"
+import (
+	"log"
+)
 
 func CheckAndLogError(err error) {
 	if err != nil {

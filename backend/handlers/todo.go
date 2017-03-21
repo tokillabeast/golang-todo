@@ -9,6 +9,7 @@ import (
 	"github.com/tokillamockingbird/golang-todo/backend/database"
 	"github.com/tokillamockingbird/golang-todo/backend/headers"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
+	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 )
 
 func GetTodos(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +32,8 @@ func GetTodo(w http.ResponseWriter, r *http.Request) {
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var todo models.Todo
 	if r.Body == nil {
-		http.Error(w, "Please send a request body", 400)
+		http.Error(w, e.EmptyRequestBodyErrorMsg, 400)
+		return
 	}
 	err := json.NewDecoder(r.Body).Decode(&todo)
 	if err != nil {
@@ -49,7 +51,8 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 func PutTodo(w http.ResponseWriter, r *http.Request) {
 	var todo models.Todo
 	if r.Body == nil {
-		http.Error(w, "Please send a request body", 400)
+		http.Error(w, e.EmptyRequestBodyErrorMsg, 400)
+		return
 	}
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&todo)
@@ -57,7 +60,6 @@ func PutTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	defer r.Body.Close()
 	todo = database.UpdateTodo(todo)
 
 	headers.SetJSONContentType(w, http.StatusOK)
@@ -70,7 +72,8 @@ func PutTodo(w http.ResponseWriter, r *http.Request) {
 func PatchTodo(w http.ResponseWriter, r *http.Request) {
 	var todo models.Todo
 	if r.Body == nil {
-		http.Error(w, "Please send a request body", 400)
+		http.Error(w, e.EmptyRequestBodyErrorMsg, 400)
+		return
 	}
 	todoId := chi.URLParam(r, "todoId") // FIXME: check that todoId contain value
 	err := json.NewDecoder(r.Body).Decode(&todo)

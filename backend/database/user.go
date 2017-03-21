@@ -5,6 +5,8 @@ import (
 
 	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
+	"time"
+	"log"
 )
 
 const UserTable = "users" // FIXME: is it a best way to store table name?
@@ -28,5 +30,34 @@ func GetUser(id string) models.User {
 }
 
 func CreateUser(user models.User) models.User {
-	return models.User{}
+	user.Created = time.Now()
+	user.Modified = time.Now()
+	response, err := r.Table(UserTable).Insert(user).RunWrite(Connect())
+	e.CheckAndLogError(err)
+	if len(response.GeneratedKeys) != 1 {
+		log.Fatalln("GeneratedKeys doesn't contain 1 element")
+	}
+	user.Id = response.GeneratedKeys[0]
+	return user
+}
+
+func UpdateUser(user models.User) models.User {
+	user.Modified = time.Now()
+	err := r.Table(UserTable).Replace(user).Exec(Connect())
+	e.CheckAndLogError(err)
+	return user
+}
+
+func PatchUser(userId string, user models.User) models.User {
+	user.Modified = time.Now()
+	err := r.Table(UserTable).Get(userId).Update(user).Exec(Connect())
+	e.CheckAndLogError(err)
+	response, err := r.Table(UserTable).Get(userId).Run(Connect())
+	response.One(&user)
+	return user
+}
+
+func DeleteUser(userId string) {
+	err := r.Table(UserTable).Get(userId).Delete().Exec(Connect())
+	e.CheckAndLogError(err)
 }
