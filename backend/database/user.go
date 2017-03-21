@@ -1,12 +1,13 @@
 package database
 
 import (
+	"log"
+	"time"
+
 	r "gopkg.in/gorethink/gorethink.v3"
 
 	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
-	"time"
-	"log"
 )
 
 const UserTable = "users" // FIXME: is it a best way to store table name?

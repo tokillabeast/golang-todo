@@ -7,9 +7,9 @@ import (
 	"github.com/pressly/chi"
 
 	"github.com/tokillamockingbird/golang-todo/backend/database"
+	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 	"github.com/tokillamockingbird/golang-todo/backend/headers"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
-	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 )
 
 func RegisterNewUser(w http.ResponseWriter, r *http.Request) {

@@ -4,11 +4,15 @@ import (
 	"github.com/pressly/chi"
 
 	"github.com/tokillamockingbird/golang-todo/backend/handlers"
+	"net/http"
 )
 
 func Routes() *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello from Golang ;)"))
+	})
 	r.Get("/api/v1/register", handlers.RegisterNewUser)
 
 	r.Route("/api/v1/todos/", func(r chi.Router) {
