@@ -20,12 +20,13 @@ services:
     container_name: golang_todo_backend
     working_dir: /go/src/github.com/tokillamockingbird/golang-todo
     command: /bin/sh -c "cd backend && glide install && go build && ./backend"
+    depends_on:
+      - golang_todo_rethinkdb
     ports:
       - "8000:8000"
     volumes:
       - .:/go/src/github.com/tokillamockingbird/golang-todo/
       - golang_todo_backend_src_data:/go/src
-#      - golang_todo_backend_vendor_data:/go/src/github.com/tokillamockingbird/golang-todo/backend/vendor:rw
     networks:
       - golang_todo_network
     environment:
