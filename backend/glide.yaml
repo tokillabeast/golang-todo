@@ -4,3 +4,6 @@ import:
 - package: github.com/pressly/chi
 - package: github.com/spf13/viper
 - package: gopkg.in/gorethink/gorethink.v3
+- package: github.com/dgrijalva/jwt-go
+- package: github.com/auth0/go-jwt-middleware
+

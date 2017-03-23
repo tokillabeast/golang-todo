@@ -1,14 +1,20 @@
-hash: 7176afc11c9c27b6ee438d09519f2e772c545ca318b0c3cd01c081ea63aabcce
-updated: 2017-03-20T22:09:27.085097557+03:00
+hash: ec5b3cfa727eff75d1bc888b93cac002598d5f229142f729471107f6c7726ba6
+updated: 2017-03-23T09:58:06.771914915Z
 imports:
+- name: github.com/auth0/go-jwt-middleware
+  version: f3f7de3b9e394e3af3b88e1b9457f6f71d1ae0ac
 - name: github.com/cenkalti/backoff
   version: 3db60c813733fce657c114634171689bbf1f8dee
+- name: github.com/dgrijalva/jwt-go
+  version: 2268707a8f0843315e2004ee4f1d021dc08baedf
 - name: github.com/fsnotify/fsnotify
-  version: 7d7316ed6e1ed2de075aab8dfc76de5d158d66e1
+  version: ff7bc41d4007f67e5456703c34342df4e0113f64
 - name: github.com/golang/protobuf
   version: c9c7427a2a70d2eb3bafa0ab2dc163e45f143317
   subpackages:
   - proto
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/hailocab/go-hostpool
   version: e80d13ce29ede4452c43dea11e79b9bc8a15b478
 - name: github.com/hashicorp/hcl
@@ -23,15 +29,17 @@ imports:
   - json/scanner
   - json/token
 - name: github.com/magiconair/properties
-  version: 6806cf261c13880f296ed31331873191e4d87b47
+  version: 51463bfca2576e06c62a8504b5c0f06d61312647
 - name: github.com/mitchellh/mapstructure
   version: 53818660ed4955e899c0bcafa97299a388bd7c8e
 - name: github.com/pelletier/go-buffruneio
   version: c37440a7cf42ac63b919c752ca73a85067e05992
 - name: github.com/pelletier/go-toml
-  version: fee7787d3f811af92276f5ff10107092e95b7a1d
+  version: 25e50242f65c230a826c3ab0d6480c58a973dcae
 - name: github.com/pressly/chi
   version: 5b7406a71dbb35d4f59b0b48e68cd9f9256f5262
+  subpackages:
+  - middleware
 - name: github.com/Sirupsen/logrus
   version: 10f801ebc38b33738c9d17d50860f484a0988ff5
 - name: github.com/spf13/afero
@@ -55,11 +63,11 @@ imports:
   subpackages:
   - context
 - name: golang.org/x/sys
-  version: 99f16d856c9836c42d24e7ab64ea72916925fa97
+  version: 8fd966b47dbdd4faa03de0d06e3d733baeb9a1a9
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd
+  version: 9cdb92193704e94e8530e4924da8f1006ef4868c
   subpackages:
   - transform
   - unicode/norm

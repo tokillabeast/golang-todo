@@ -12,13 +12,13 @@ import (
 	"github.com/tokillamockingbird/golang-todo/backend/models"
 )
 
-func GetTodos(w http.ResponseWriter, r *http.Request) {
+var TodosHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { // FIXME: migrate to handlers???
 	headers.SetJSONContentType(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(database.GetTodos()); err != nil {
 		http.Error(w, err.Error(), 400) // FIXME: new function in errors like CheckAndLogError
 		return
 	}
-}
+})
 
 func GetTodo(w http.ResponseWriter, r *http.Request) {
 	headers.SetJSONContentType(w, http.StatusOK)
