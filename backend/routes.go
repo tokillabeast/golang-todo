@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/pressly/chi"
+	"net/http"
 
+	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
+
 	"github.com/tokillamockingbird/golang-todo/backend/handlers"
 	"github.com/tokillamockingbird/golang-todo/backend/routes"
-	"net/http"
 )
 
 func Routes() *chi.Mux {
