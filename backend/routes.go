@@ -13,7 +13,9 @@ func Routes() *chi.Mux {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello from Golang ;)"))
 	})
+	r.Get("/api/v1/status", handlers.NotImplemented)
 	r.Get("/api/v1/register", handlers.RegisterNewUser)
+	r.Get("/api/v1/authorize", handlers.NotImplemented)
 
 	r.Route("/api/v1/todos/", func(r chi.Router) {
 		r.Get("/", handlers.GetTodos)
