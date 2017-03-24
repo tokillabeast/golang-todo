@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	jwt "github.com/dgrijalva/jwt-go"
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 var JwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{

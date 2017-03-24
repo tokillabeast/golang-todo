@@ -21,10 +21,13 @@ func GetTodos() models.Todos {
 	return todos
 }
 
-func GetTodo(id string) models.Todo {
+func GetTodo(id string) models.Todo { // FIXME: return error too?
 	todo := models.Todo{}
 	response, err := r.Table(TodoTable).Get(id).Run(Connect())
 	e.CheckAndLogError(err)
+	if response == nil {
+		return models.Todo{}
+	}
 	err = response.One(&todo) // Check if result return values
 	e.CheckAndLogError(err)
 	return todo
