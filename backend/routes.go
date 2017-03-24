@@ -20,6 +20,9 @@ func Routes() *chi.Mux {
 	})
 	r.Get("/api/v1/status", handlers.NotImplemented)
 
+	r.Post("/api/v1/register", handlers.RegisterNewUser)
+	r.Post("/api/v1/authenticate", handlers.AuthenticateUser)
+
 	r.Mount("/api/v1/todos", routes.TodoResource{}.Routes())
 	r.Mount("/api/v1/users", routes.UsersResource{}.Routes())
 

@@ -11,10 +11,7 @@ type UsersResource struct{}
 func (rs UsersResource) Routes() chi.Router {
 	r := chi.NewRouter()
 
-	r.Get("/api/v1/register", handlers.RegisterNewUser)
-	r.Get("/api/v1/authorize", handlers.NotImplemented)
-
-	r.Route("/api/v1/users/", func(r chi.Router) {
+	r.Route("/", func(r chi.Router) {
 		r.Get("/", handlers.GetUsers)
 		r.Post("/", handlers.CreateUser)
 		r.Route("/:userId", func(r chi.Router) {

@@ -25,4 +25,4 @@ To start all needed services simply execute one command
     docker-compose up -d
 ```
 After this you can check RethinkDB admin panel on 8080 port, open `localhost:8080` in browser to check it.
-<br /> Golang application will be available on 8000 port, open `localhost:8000` to see hello message.
+<br /> Golang application will be available on 8000 port, open `localhost:8000` in browser to see hello message.

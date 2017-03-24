@@ -1,7 +1,7 @@
 package database
 
 import (
-	"log"
+	"errors"
 	"time"
 
 	r "gopkg.in/gorethink/gorethink.v3"
@@ -21,6 +21,29 @@ func GetUsers() models.Users { // FIXME: add filtering & order support
 	return users
 }
 
+func GetAuthenticateUser(authenticate models.AuthenticateRequest) (models.User, error) { // FIXME: use GetUsers?
+	var users []models.User
+	response, err := r.Table(UserTable).Filter(authenticate).Run(Connect())
+	if err != nil {
+		return models.User{}, errors.New("Internal error")
+	}
+	if response == nil {
+		return models.User{}, errors.New("Internal error")
+	}
+	err = response.All(&users)
+	if err != nil {
+		return models.User{}, errors.New("Internal error")
+	}
+	switch len(users) {
+	case 0:
+		return models.User{}, errors.New("User not found")
+	case 1:
+		return users[0], nil
+	default:
+		return models.User{}, errors.New("Internal error: Several users found")
+	}
+}
+
 func GetUser(id string) models.User {
 	var user models.User
 	response, err := r.Table(UserTable).Run(Connect())
@@ -30,16 +53,17 @@ func GetUser(id string) models.User {
 	return user
 }
 
-func CreateUser(user models.User) models.User {
-	user.Created = time.Now()
-	user.Modified = time.Now()
+func CreateUser(user models.User) (models.User, error) {
+	user.Created, user.Modified = time.Now(), time.Now()
 	response, err := r.Table(UserTable).Insert(user).RunWrite(Connect())
-	e.CheckAndLogError(err)
-	if len(response.GeneratedKeys) != 1 {
-		log.Fatalln("GeneratedKeys doesn't contain 1 element")
+	if err != nil {
+		return models.User{}, err
+	}
+	if response.Inserted != 1 && len(response.GeneratedKeys) != 1 {
+		return models.User{}, errors.New("GeneratedKeys doesn't contain 1 element")
 	}
 	user.Id = response.GeneratedKeys[0]
-	return user
+	return user, nil
 }
 
 func UpdateUser(user models.User) models.User {

@@ -13,7 +13,7 @@ import (
 )
 
 var TodosHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { // FIXME: migrate to handlers???
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(database.GetTodos()); err != nil {
 		http.Error(w, err.Error(), 400) // FIXME: new function in errors like CheckAndLogError
 		return
@@ -21,7 +21,7 @@ var TodosHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 })
 
 func GetTodo(w http.ResponseWriter, r *http.Request) {
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	todoId := chi.URLParam(r, "todoId")
 	if err := json.NewEncoder(w).Encode(database.GetTodo(todoId)); err != nil {
 		http.Error(w, err.Error(), 400)
@@ -42,7 +42,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo = database.CreateTodo(todo)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
 		http.Error(w, err.Error(), 400)
 	}
@@ -62,7 +62,7 @@ func PutTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo = database.UpdateTodo(todo)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -83,7 +83,7 @@ func PatchTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo = database.PatchTodo(todoId, todo)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(todo); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -94,5 +94,5 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	todoId := chi.URLParam(r, "todoId")
 	database.DeleteTodo(todoId)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 }

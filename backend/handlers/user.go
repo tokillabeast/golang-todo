@@ -10,14 +10,68 @@ import (
 	e "github.com/tokillamockingbird/golang-todo/backend/errors"
 	"github.com/tokillamockingbird/golang-todo/backend/headers"
 	"github.com/tokillamockingbird/golang-todo/backend/models"
+	"github.com/tokillamockingbird/golang-todo/backend/services"
 )
 
 func RegisterNewUser(w http.ResponseWriter, r *http.Request) {
-	CreateUser(w, r)
+	var user models.User
+	if r.Body == nil {
+		e.Error(w, e.EmptyRequestBodyErrorMsg, http.StatusNoContent)
+		return
+	}
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		e.Error(w, err.Error(), http.StatusPartialContent)
+		return
+	}
+	user, err = database.CreateUser(user)
+	if err != nil {
+		e.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	token, err := services.GenerateToken(user)
+	if err != nil {
+		e.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(models.AuthenticateResponse{user, token}); err != nil {
+		e.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
+	var authenticate models.AuthenticateRequest
+	if r.Body == nil {
+		e.Error(w, e.EmptyRequestBodyErrorMsg, http.StatusNoContent)
+		return
+	}
+	err := json.NewDecoder(r.Body).Decode(&authenticate)
+	if err != nil {
+		e.Error(w, err.Error(), http.StatusPartialContent)
+		return
+	}
+	user, err := database.GetAuthenticateUser(authenticate)
+	if err != nil {
+		e.Error(w, err.Error(), http.StatusNoContent)
+		return
+	}
+	token, err := services.GenerateToken(user)
+	if err != nil {
+		e.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(models.AuthenticateResponse{user, token}); err != nil {
+		e.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(database.GetUsers()); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -25,10 +79,10 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	userId := chi.URLParam(r, "userId")
 	if err := json.NewEncoder(w).Encode(database.GetUser(userId)); err != nil {
-		http.Error(w, err.Error(), 400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -41,13 +95,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, err.Error(), 400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	user = database.CreateUser(user)
+	user, _ = database.CreateUser(user)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -57,7 +111,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func PutUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	if r.Body == nil {
-		http.Error(w, e.EmptyRequestBodyErrorMsg, 400)
+		http.Error(w, e.EmptyRequestBodyErrorMsg, http.StatusInternalServerError)
 		return
 	}
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -68,9 +122,9 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 
 	user = database.UpdateUser(user)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		http.Error(w, err.Error(), 400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -89,9 +143,9 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 
 	user = database.PatchUser(userId, user)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		http.Error(w, err.Error(), 400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -100,5 +154,5 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "userId")
 	database.DeleteUser(userId)
 
-	headers.SetJSONContentType(w, http.StatusOK)
+	headers.SetJSONContentTypeAndStatus(w, http.StatusOK)
 }
